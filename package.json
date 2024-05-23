@@ -1,0 +1,24 @@
+{
+  "name": "telegram2whatsapp",
+  "version": "1.0.0",
+  "description": "bot to send content from telegram to whatsapp",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adgamerx/telegram2whatsapp.git"
+  },
+  "author": "ADGAMERX",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/adgamerx/telegram2whatsapp/issues"
+  },
+  "homepage": "https://github.com/adgamerx/telegram2whatsapp#readme",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "telegraf": "^4.16.3"
+  }
+}
