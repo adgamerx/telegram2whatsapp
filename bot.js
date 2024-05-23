@@ -3,9 +3,9 @@ const { Telegraf } = require('telegraf');
 
 const bot = new Telegraf(process.env.BOT_TOKEN); // Use the BOT_TOKEN environment variable
 
-// Channel IDs
-const CHANNEL1_ID = '@channel1username'; // Replace with the actual username of channel1
-const CHANNEL2_ID = '@channel2username'; // Replace with the actual username of channel2
+// Channel IDs  (Use the CHANNEL_ID environment variables)
+const CHANNEL1_ID = process.env.CHANNEL1_ID;
+const CHANNEL2_ID = process.env.CHANNEL2_ID; 
 
 // Handle messages in channel1
 bot.on('channel_post', (ctx) => {
