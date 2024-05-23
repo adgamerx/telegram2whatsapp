@@ -7,9 +7,12 @@ const bot = new Telegraf(process.env.BOT_TOKEN); // Use the BOT_TOKEN environmen
 const CHANNEL1_ID = process.env.CHANNEL1_ID;
 const CHANNEL2_ID = process.env.CHANNEL2_ID; 
 
+// Log that the bot is running
+console.log("Bot is running...");
+
 // Handle messages in channel1
 bot.on('channel_post', (ctx) => {
-  if (ctx.channelPost.chat.username === 'channel1username') { // Replace with channel1's username
+  if (ctx.channelPost.chat.username === CHANNEL1_ID) {
     const message = ctx.channelPost;
 
     if (message.text) {
