@@ -13,6 +13,7 @@ async function connectToWhatsApp() {
     // can provide additional config here
     printQRInTerminal: true,
     auth: state,
+    version:  [2, 2413, 1],
   });
   sock.ev.on("connection.update", (update) => {
     const { connection, lastDisconnect } = update;
