@@ -3,9 +3,14 @@ const {
   DisconnectReason,
   BufferJSON,
   useMultiFileAuthState,
+  Browsers,
 } = require("@whiskeysockets/baileys");
 
+require("dotenv").config(); // Load environment variables from .env file
+
 const admin = process.env.ADMIN; // The admin's phone number
+
+var groupIDs = process.env.GROUPS.split(" "); // The group IDs
 
 async function connectToWhatsApp() {
   // load the auth info from file
@@ -16,9 +21,9 @@ async function connectToWhatsApp() {
     printQRInTerminal: true,
     qrTimeout: 0, // 0 means it will never time out
     auth: state,
-    logconsole: false,
     version: [2, 2413, 1],
-    syncFullHistory: false,
+    logconsole: false,
+    browser: Browsers.windows("desktop"),
   });
 
   // connect to WA
@@ -48,7 +53,9 @@ async function connectToWhatsApp() {
   // listen for messages
   sock.ev.on("messages.upsert", async ({ messages }) => {
     if (messages[0].key.fromMe) return; // ignore messages from self
-    if (messages[0].key.remoteJid !== admin) return; // ignore messages from other numbers
+    // if (messages[0].key.remoteJid != admin) return; // ignore messages from other numbers
+
+    console.log(messages);
 
     // Test if the bot is working
     if (messages[0].message.conversation === "test") {
@@ -57,7 +64,24 @@ async function connectToWhatsApp() {
       });
       return;
     }
+
+    // Broadcast messages to the groups
+    if (messages[0].message.conversation) {
+      groupIDs.forEach(async (groupID) => {
+        await sock.sendMessage(groupID, {
+          text: messages[0].message.conversation,
+        });
+
+        // Add delay to prevent rate limiting
+        await delay(2000);
+      });
+    }
   });
+}
+
+// Function to introduce delay
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 // run in main file
 connectToWhatsApp();
