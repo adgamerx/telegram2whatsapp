@@ -1,16 +1,24 @@
-import makeWASocket, { DisconnectReason } from "@whiskeysockets/baileys";
+const {
+  makeWASocket,
+  DisconnectReason,
+  BufferJSON,
+  useMultiFileAuthState,
+} = require("@whiskeysockets/baileys");
+
+const fs = require("fs");
 
 async function connectToWhatsApp() {
+  const { state, saveCreds } = await useMultiFileAuthState("auth_info_baileys");
   const sock = makeWASocket({
     // can provide additional config here
     printQRInTerminal: true,
+    auth: state,
   });
   sock.ev.on("connection.update", (update) => {
     const { connection, lastDisconnect } = update;
     if (connection === "close") {
       const shouldReconnect =
-        (lastDisconnect.error)?.output?.statusCode !==
-        DisconnectReason.loggedOut;
+        lastDisconnect.error?.output?.statusCode !== DisconnectReason.loggedOut;
       console.log(
         "connection closed due to ",
         lastDisconnect.error,
@@ -25,6 +33,7 @@ async function connectToWhatsApp() {
       console.log("opened connection");
     }
   });
+  sock.ev.on("creds.update", saveCreds)
   sock.ev.on("messages.upsert", async (m) => {
     console.log(JSON.stringify(m, undefined, 2));
 
