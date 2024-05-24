@@ -5,6 +5,8 @@ const {
   useMultiFileAuthState,
 } = require("@whiskeysockets/baileys");
 
+const admin = process.env.ADMIN; // The admin's phone number
+
 async function connectToWhatsApp() {
   // load the auth info from file
   const { state, saveCreds } = await useMultiFileAuthState("auth_info_baileys");
@@ -45,14 +47,16 @@ async function connectToWhatsApp() {
 
   // listen for messages
   sock.ev.on("messages.upsert", async ({ messages }) => {
+    if (messages[0].key.fromMe) return; // ignore messages from self
+    if (messages[0].key.remoteJid !== admin) return; // ignore messages from other numbers
 
-    if(messages[0].key.fromMe) return; // ignore messages from self
-
-    console.log("got messages", messages[0].message.conversation);
-    // reply to the message
-    await sock.sendMessage(messages[0].key.remoteJid, {
-      text: "Hello there!",
-    });
+    // Test if the bot is working
+    if (messages[0].message.conversation === "test") {
+      await sock.sendMessage(messages[0].key.remoteJid, {
+        text: "Bot is working!🎉",
+      });
+      return;
+    }
   });
 }
 // run in main file
