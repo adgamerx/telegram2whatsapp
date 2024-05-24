@@ -5,16 +5,21 @@ const {
   useMultiFileAuthState,
 } = require("@whiskeysockets/baileys");
 
-const fs = require("fs");
-
 async function connectToWhatsApp() {
+  // load the auth info from file
   const { state, saveCreds } = await useMultiFileAuthState("auth_info_baileys");
+
+  // create a new socket
   const sock = makeWASocket({
-    // can provide additional config here
     printQRInTerminal: true,
+    qrTimeout: 0, // 0 means it will never time out
     auth: state,
-    version:  [2, 2413, 1],
+    logconsole: false,
+    version: [2, 2413, 1],
+    syncFullHistory: false,
   });
+
+  // connect to WA
   sock.ev.on("connection.update", (update) => {
     const { connection, lastDisconnect } = update;
     if (connection === "close") {
@@ -34,12 +39,18 @@ async function connectToWhatsApp() {
       console.log("opened connection");
     }
   });
-  sock.ev.on("creds.update", saveCreds)
-  sock.ev.on("messages.upsert", async (m) => {
-    console.log(JSON.stringify(m, undefined, 2));
 
-    console.log("replying to", m.messages[0].key.remoteJid);
-    await sock.sendMessage(m.messages[0].key.remoteJid, {
+  // save creds on update
+  sock.ev.on("creds.update", saveCreds);
+
+  // listen for messages
+  sock.ev.on("messages.upsert", async ({ messages }) => {
+
+    if(messages[0].key.fromMe) return; // ignore messages from self
+
+    console.log("got messages", messages[0].message.conversation);
+    // reply to the message
+    await sock.sendMessage(messages[0].key.remoteJid, {
       text: "Hello there!",
     });
   });
