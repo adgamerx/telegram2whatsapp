@@ -10,6 +10,14 @@ const CHANNEL2_ID = process.env.CHANNEL2_ID;
 // Log that the bot is running
 console.log("Bot is running...");
 
+bot.command("start", (ctx) => {
+  ctx.reply("Bot is running...");
+});
+
+bot.command("help", (ctx) => {
+  ctx.reply("This bot forwards messages from one channel to another.");
+});
+
 // Handle messages in channel1
 bot.on("channel_post", async (ctx) => {
   if (ctx.channelPost.chat.id == CHANNEL1_ID) {
