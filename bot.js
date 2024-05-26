@@ -1,11 +1,14 @@
 require("dotenv").config(); 
 const { Telegraf } = require("telegraf");
-const { sendMessageToWhatsApp } = require('./helper/whatsapp');
+const { sendMessageToWhatsApp, connectToWhatsApp } = require('./helper/whatsapp');
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
 // Channel IDs  (Use the CHANNEL_ID environment variables)
 const CHANNEL1_ID = process.env.CHANNEL1_ID;
 const CHANNEL2_ID = process.env.CHANNEL2_ID;
+
+// Connect to WhatsApp
+sock = connectToWhatsApp();
 
 // Log that the bot is running
 console.log("Bot is running...");
@@ -51,8 +54,6 @@ bot.on("channel_post", async (ctx) => {
 });
 
 bot.launch();
-
-sock = connectToWhatsApp();
 
 // Enable graceful stop
 process.once("SIGINT", () => bot.stop("SIGINT"));

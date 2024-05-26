@@ -3,11 +3,12 @@ const {
   DisconnectReason,
   BufferJSON,
   useMultiFileAuthState,
-  Browsers,
+  Browsers, 
 } = require("@whiskeysockets/baileys");
 const pino = require("pino");
 require("dotenv").config(); // Load environment variables from .env file
 const fetch = require('node-fetch');
+const fs = require('fs');
 
 const admin = process.env.ADMIN; // The admin's phone number
 var groupIDs = process.env.GROUPS.split(" "); // The group IDs
@@ -15,9 +16,20 @@ var groupIDs = process.env.GROUPS.split(" "); // The group IDs
 let sock;
 
 const connectToWhatsApp = async () => {
-  // load the auth info from file
-  const { state, saveCreds } = await useMultiFileAuthState("auth_info_baileys");
-
+  let state, saveCreds;
+  
+  try {
+    // Check if auth state directory exists
+    if (fs.existsSync("auth_info_baileys")) {
+      // Load the auth info from file
+      ({ state, saveCreds } = await useMultiFileAuthState("auth_info_baileys"));
+    } else {
+      // Create the directory for the first time use
+      fs.mkdirSync("auth_info_baileys");
+      // Initialize empty state and saveCreds functions for the first time
+      ({ state, saveCreds } = await useMultiFileAuthState("auth_info_baileys"));
+    }
+  
   // create a new socket
   sock = makeWASocket({
     printQRInTerminal: true,
@@ -27,6 +39,7 @@ const connectToWhatsApp = async () => {
     logger: pino({ level: "silent" }),
     browser: Browsers.windows("desktop"),
   });
+  
 
   // connect to WA
   sock.ev.on("connection.update", (update) => {
@@ -78,6 +91,9 @@ const connectToWhatsApp = async () => {
   });
 
   return sock;
+} catch (error) {
+  console.error("Failed to connect to WhatsApp:", error);
+}
 };
 
 // Function to introduce delay
@@ -106,4 +122,4 @@ const sendMessageToWhatsApp = async (message) => {
   };
 };
 
-module.exports = { sock, sendMessageToWhatsApp };
+module.exports = { sock, sendMessageToWhatsApp, connectToWhatsApp };
