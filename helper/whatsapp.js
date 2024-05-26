@@ -106,7 +106,4 @@ const sendMessageToWhatsApp = async (message) => {
   };
 };
 
-// run in main file
-sock = connectToWhatsApp();
-
 module.exports = { sock, sendMessageToWhatsApp };

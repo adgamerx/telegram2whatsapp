@@ -52,6 +52,8 @@ bot.on("channel_post", async (ctx) => {
 
 bot.launch();
 
+sock = connectToWhatsApp();
+
 // Enable graceful stop
 process.once("SIGINT", () => bot.stop("SIGINT"));
 process.once("SIGTERM", () => bot.stop("SIGTERM"));
