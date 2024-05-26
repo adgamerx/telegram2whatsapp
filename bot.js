@@ -1,7 +1,7 @@
-require("dotenv").config(); // Load environment variables from .env file
+require("dotenv").config(); 
 const { Telegraf } = require("telegraf");
 
-const bot = new Telegraf(process.env.BOT_TOKEN); // Use the BOT_TOKEN environment variable
+const bot = new Telegraf(process.env.BOT_TOKEN);
 
 // Channel IDs  (Use the CHANNEL_ID environment variables)
 const CHANNEL1_ID = process.env.CHANNEL1_ID;
@@ -33,7 +33,7 @@ bot.on("channel_post", (ctx) => {
       const caption = message.caption || "";
       ctx.telegram.sendDocument(CHANNEL2_ID, document, { caption });
     }
-    // Handle other types of messages similarly (audio, voice, etc.)
+    // todo: Handle other types of messages similarly (audio, voice, etc.)
   }
 });
 
