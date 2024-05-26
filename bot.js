@@ -1,6 +1,6 @@
 require("dotenv").config(); 
 const { Telegraf } = require("telegraf");
-const { sendMessageToWhatsApp } = require('./helper/whatsapp');
+const { sendMessageToWhatsApp, sock } = require('./helper/whatsapp');
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
 // Channel IDs  (Use the CHANNEL_ID environment variables)
