@@ -7,6 +7,7 @@ const {
 } = require("@whiskeysockets/baileys");
 const pino = require("pino");
 require("dotenv").config(); // Load environment variables from .env file
+const fetch = require('node-fetch');
 
 const admin = process.env.ADMIN; // The admin's phone number
 var groupIDs = process.env.GROUPS.split(" "); // The group IDs
@@ -87,19 +88,20 @@ function delay(ms) {
 const sendMessageToWhatsApp = async (message) => {
   // Broadcast messages to the groups
   if (message.text) {
-    groupIDs.forEach(async (groupID) => {
-      await sock.sendMessage(groupID, {
+    groupIDs.forEach((groupID) => {
+      sock.sendMessage(groupID, {
         text: message.text,
       });
-      await delay(2000);
+      delay(2000);
     });
   } else if (message.photo) {
     groupIDs.forEach(async (groupID) => {
-      await sock.sendMessage(groupID, {
-        text: message.caption,
-        attachment: message.photo,
+      const buffer = await fetch(message.fileLink.href).then(res => res.buffer());
+      sock.sendMessage(groupID, {
+        caption: message.caption || '',
+        image: buffer,
       });
-      await delay(2000);
+      delay(2000);
     });
   };
 };

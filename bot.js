@@ -26,7 +26,7 @@ bot.on("channel_post", async (ctx) => {
       const caption = message.caption || "";
       ctx.telegram.sendPhoto(CHANNEL2_ID, photo, { caption });
       await sendMessageToWhatsApp({ photo: true, fileLink, caption });
-      
+
     } else if (message.video) {
       // If the message is a video
       const video = message.video.file_id;
