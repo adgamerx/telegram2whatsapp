@@ -13,7 +13,7 @@ const {
   const admin = process.env.ADMIN;
   const groupIDs = process.env.GROUPS.split(" ");
     const CHANNEL1_ID = process.env.CHANNEL1_ID;
-  // const CHANNEL1_ID = -100;
+//   const CHANNEL1_ID = -100;
   const CHANNEL2_ID = process.env.CHANNEL2_ID;
   const bot = new Telegraf(process.env.BOT_TOKEN);
   
@@ -24,15 +24,18 @@ const {
   
     sock = makeWASocket({
       printQRInTerminal: true,
-      qrTimeout: 0,
+    //   qrTimeout: 0,
       auth: state,
       version: [2, 2413, 1],
       logger: pino({ level: "silent" }),
-      browser: Browsers.windows("desktop"),
+    //   browser: Browsers.windows("desktop"),
     });
   
     sock.ev.on("connection.update", (update) => {
-      const { connection, lastDisconnect } = update;
+      const { connection, lastDisconnect, qr } = update;
+      if (qr) {
+        console.log("QR Code: ", qr); 
+      }
       if (connection === "close") {
         const shouldReconnect =
           lastDisconnect.error?.output?.statusCode !== DisconnectReason.loggedOut;
