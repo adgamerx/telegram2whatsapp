@@ -4,7 +4,7 @@
   "description": "bot to send content from telegram to whatsapp",
   "main": "bot.js",
   "scripts": {
-    "start": "node bot.js",
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon bot.js"
   },
